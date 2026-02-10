@@ -4,9 +4,11 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\BookController;
 use Illuminate\Support\Facades\Route;
 
-// Routes d'authentification (non protégées)
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
+// Routes d'authentification avec limitation de taux (10 requêtes par minute)
+Route::middleware('throttle:10,1')->group(function () {
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/login', [UserController::class, 'login']);
+});
 
 // Route de déconnexion (protégée)
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);

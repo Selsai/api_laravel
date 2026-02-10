@@ -6,16 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Http\Resources\BookResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
-    // Lister tous les livres
+    /**
+     * Lister tous les livres avec pagination (2 éléments par page)
+     */
     public function index()
     {
-        return BookResource::collection(Book::all());
+        $books = Book::paginate(2);
+        return BookResource::collection($books);
     }
 
-    // Créer un nouveau livre
+    /**
+     * Créer un nouveau livre
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -25,16 +31,26 @@ class BookController extends Controller
             'isbn' => 'required|string|size:13|unique:books,isbn',
         ]); 
                
-        return new BookResource(Book::create($validated));
+        $book = Book::create($validated);
+        
+        return response()->json(new BookResource($book), 201);
     }
 
-    // Afficher un livre spécifique
+    /**
+     * Afficher un livre spécifique avec mise en cache (60 minutes)
+     */
     public function show(Book $book)
     {
-        return new BookResource($book);
+        $cachedBook = Cache::remember("book.{$book->id}", 3600, function () use ($book) {
+            return $book;
+        });
+
+        return new BookResource($cachedBook);
     }
 
-    // Mettre à jour un livre
+    /**
+     * Mettre à jour un livre
+     */
     public function update(Request $request, Book $book)
     {
         $validated = $request->validate([
@@ -46,12 +62,20 @@ class BookController extends Controller
 
         $book->update($validated);
         
+        // Invalider le cache après la mise à jour
+        Cache::forget("book.{$book->id}");
+        
         return new BookResource($book);
     }
 
-    // Supprimer un livre
+    /**
+     * Supprimer un livre
+     */
     public function destroy(Book $book)
     {
+        // Invalider le cache avant la suppression
+        Cache::forget("book.{$book->id}");
+        
         $book->delete();
         
         return response()->noContent();
