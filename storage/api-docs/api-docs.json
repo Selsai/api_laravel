@@ -22,6 +22,16 @@
                 "operationId": "f31a4a8c234eea8c0b2fdcd6634c37ce",
                 "parameters": [
                     {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
+                        }
+                    },
+                    {
                         "name": "page",
                         "in": "query",
                         "description": "Numéro de la page",
@@ -53,27 +63,122 @@
                                                     },
                                                     "author": {
                                                         "type": "string",
-                                                        "example": "George Orwell"
+                                                        "example": "GEORGE ORWELL"
                                                     },
                                                     "summary": {
                                                         "type": "string",
-                                                        "example": "Un roman dystopique..."
+                                                        "example": "Roman dystopique décrivant une société totalitaire contrôlée par Big Brother."
                                                     },
                                                     "isbn": {
                                                         "type": "string",
                                                         "example": "9780451524935"
+                                                    },
+                                                    "_links": {
+                                                        "properties": {
+                                                            "self": {
+                                                                "type": "string",
+                                                                "example": "http://localhost:8000/api/v1/books/1"
+                                                            },
+                                                            "update": {
+                                                                "type": "string",
+                                                                "example": "http://localhost:8000/api/v1/books/1"
+                                                            },
+                                                            "delete": {
+                                                                "type": "string",
+                                                                "example": "http://localhost:8000/api/v1/books/1"
+                                                            },
+                                                            "all": {
+                                                                "type": "string",
+                                                                "example": "http://localhost:8000/api/v1/books"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 },
                                                 "type": "object"
                                             }
                                         },
+                                        "links": {
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books?page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books?page=2"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books?page=2",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
                                         "meta": {
-                                            "type": "object",
-                                            "example": {
-                                                "current_page": 1,
-                                                "per_page": 2,
-                                                "total": 10
-                                            }
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string",
+                                                                "example": null,
+                                                                "nullable": true
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "example": "&laquo; Previous"
+                                                            },
+                                                            "page": {
+                                                                "type": "integer",
+                                                                "example": null,
+                                                                "nullable": true
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean",
+                                                                "example": false
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -103,8 +208,8 @@
                     {
                         "name": "Accept",
                         "in": "header",
-                        "description": "Type de réponse attendu",
-                        "required": false,
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "example": "application/json"
@@ -252,6 +357,16 @@
                 "operationId": "3184b7ae54e17e29fd5fa3027972790e",
                 "parameters": [
                     {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
+                        }
+                    },
+                    {
                         "name": "id",
                         "in": "path",
                         "description": "ID du livre",
@@ -279,23 +394,36 @@
                                         },
                                         "author": {
                                             "type": "string",
-                                            "example": "George Orwell"
+                                            "example": "GEORGE ORWELL"
                                         },
                                         "summary": {
                                             "type": "string",
-                                            "example": "Un roman dystopique..."
+                                            "example": "Roman dystopique décrivant une société totalitaire contrôlée par Big Brother."
                                         },
                                         "isbn": {
                                             "type": "string",
                                             "example": "9780451524935"
                                         },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
+                                        "_links": {
+                                            "properties": {
+                                                "self": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books/1"
+                                                },
+                                                "update": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books/1"
+                                                },
+                                                "delete": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books/1"
+                                                },
+                                                "all": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8000/api/v1/books"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -351,8 +479,8 @@
                     {
                         "name": "Accept",
                         "in": "header",
-                        "description": "Type de réponse attendu",
-                        "required": false,
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "example": "application/json"
@@ -521,8 +649,8 @@
                     {
                         "name": "Accept",
                         "in": "header",
-                        "description": "Type de réponse attendu",
-                        "required": false,
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "example": "application/json"
@@ -602,8 +730,8 @@
                     {
                         "name": "Accept",
                         "in": "header",
-                        "description": "Type de réponse attendu",
-                        "required": false,
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "example": "application/json"
@@ -755,8 +883,8 @@
                     {
                         "name": "Accept",
                         "in": "header",
-                        "description": "Type de réponse attendu",
-                        "required": false,
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "example": "application/json"
@@ -869,8 +997,8 @@
                     {
                         "name": "Accept",
                         "in": "header",
-                        "description": "Type de réponse attendu",
-                        "required": false,
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "example": "application/json"
@@ -984,8 +1112,8 @@
                     {
                         "name": "Accept",
                         "in": "header",
-                        "description": "Type de réponse attendu",
-                        "required": false,
+                        "description": "Toujours \"application/json\"",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "example": "application/json"

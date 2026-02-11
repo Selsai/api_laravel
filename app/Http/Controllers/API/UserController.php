@@ -20,8 +20,8 @@ class UserController extends Controller
     #[OA\Parameter(
         name: 'Accept',
         in: 'header',
-        description: 'Type de réponse attendu',
-        required: false,
+        description: 'Toujours "application/json"',
+        required: true,
         schema: new OA\Schema(type: 'string', example: 'application/json')
     )]
     #[OA\RequestBody(
@@ -98,8 +98,8 @@ class UserController extends Controller
     #[OA\Parameter(
         name: 'Accept',
         in: 'header',
-        description: 'Type de réponse attendu',
-        required: false,
+        description: 'Toujours "application/json"',
+        required: true,
         schema: new OA\Schema(type: 'string', example: 'application/json')
     )]
     #[OA\RequestBody(
@@ -184,8 +184,8 @@ class UserController extends Controller
     #[OA\Parameter(
         name: 'Accept',
         in: 'header',
-        description: 'Type de réponse attendu',
-        required: false,
+        description: 'Toujours "application/json"',
+        required: true,
         schema: new OA\Schema(type: 'string', example: 'application/json')
     )]
     #[OA\Response(

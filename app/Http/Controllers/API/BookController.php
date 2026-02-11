@@ -18,6 +18,13 @@ class BookController extends Controller
         tags: ['Livres']
     )]
     #[OA\Parameter(
+        name: 'Accept',
+        in: 'header',
+        description: 'Toujours "application/json"',
+        required: true,
+        schema: new OA\Schema(type: 'string', example: 'application/json')
+    )]
+    #[OA\Parameter(
         name: 'page',
         in: 'query',
         description: 'Numéro de la page',
@@ -36,22 +43,101 @@ class BookController extends Controller
                         properties: [
                             new OA\Property(property: 'id', type: 'integer', example: 1),
                             new OA\Property(property: 'title', type: 'string', example: '1984'),
-                            new OA\Property(property: 'author', type: 'string', example: 'George Orwell'),
-                            new OA\Property(property: 'summary', type: 'string', example: 'Un roman dystopique...'),
+                            new OA\Property(property: 'author', type: 'string', example: 'GEORGE ORWELL'),
+                            new OA\Property(
+                                property: 'summary',
+                                type: 'string',
+                                example: 'Roman dystopique décrivant une société totalitaire contrôlée par Big Brother.'
+                            ),
                             new OA\Property(property: 'isbn', type: 'string', example: '9780451524935'),
+                            new OA\Property(
+                                property: '_links',
+                                type: 'object',
+                                properties: [
+                                    new OA\Property(
+                                        property: 'self',
+                                        type: 'string',
+                                        example: 'http://localhost:8000/api/v1/books/1'
+                                    ),
+                                    new OA\Property(
+                                        property: 'update',
+                                        type: 'string',
+                                        example: 'http://localhost:8000/api/v1/books/1'
+                                    ),
+                                    new OA\Property(
+                                        property: 'delete',
+                                        type: 'string',
+                                        example: 'http://localhost:8000/api/v1/books/1'
+                                    ),
+                                    new OA\Property(
+                                        property: 'all',
+                                        type: 'string',
+                                        example: 'http://localhost:8000/api/v1/books'
+                                    ),
+                                ]
+                            ),
                         ],
                         type: 'object'
                     )
                 ),
                 new OA\Property(
+                    property: 'links',
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'first',
+                            type: 'string',
+                            example: 'http://localhost:8000/api/v1/books?page=1'
+                        ),
+                        new OA\Property(
+                            property: 'last',
+                            type: 'string',
+                            example: 'http://localhost:8000/api/v1/books?page=2'
+                        ),
+                        new OA\Property(
+                            property: 'prev',
+                            type: 'string',
+                            nullable: true,
+                            example: null
+                        ),
+                        new OA\Property(
+                            property: 'next',
+                            type: 'string',
+                            nullable: true,
+                            example: 'http://localhost:8000/api/v1/books?page=2'
+                        ),
+                    ]
+                ),
+                new OA\Property(
                     property: 'meta',
                     type: 'object',
-                    example: [
-                        'current_page' => 1,
-                        'per_page'     => 2,
-                        'total'        => 10
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'from', type: 'integer', example: 1),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                        new OA\Property(
+                            property: 'links',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'url', type: 'string', nullable: true, example: null),
+                                    new OA\Property(property: 'label', type: 'string', example: '&laquo; Previous'),
+                                    new OA\Property(property: 'page', type: 'integer', nullable: true, example: null),
+                                    new OA\Property(property: 'active', type: 'boolean', example: false),
+                                ],
+                                type: 'object'
+                            )
+                        ),
+                        new OA\Property(
+                            property: 'path',
+                            type: 'string',
+                            example: 'http://localhost:8000/api/v1/books'
+                        ),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 2),
+                        new OA\Property(property: 'to', type: 'integer', example: 2),
+                        new OA\Property(property: 'total', type: 'integer', example: 3),
                     ]
-                )
+                ),
             ],
             type: 'object'
         )
@@ -79,8 +165,8 @@ class BookController extends Controller
     #[OA\Parameter(
         name: 'Accept',
         in: 'header',
-        description: 'Type de réponse attendu',
-        required: false,
+        description: 'Toujours "application/json"',
+        required: true,
         schema: new OA\Schema(type: 'string', example: 'application/json')
     )]
     #[OA\RequestBody(
@@ -155,6 +241,13 @@ class BookController extends Controller
         tags: ['Livres']
     )]
     #[OA\Parameter(
+        name: 'Accept',
+        in: 'header',
+        description: 'Toujours "application/json"',
+        required: true,
+        schema: new OA\Schema(type: 'string', example: 'application/json')
+    )]
+    #[OA\Parameter(
         name: 'id',
         in: 'path',
         description: 'ID du livre',
@@ -168,11 +261,39 @@ class BookController extends Controller
             properties: [
                 new OA\Property(property: 'id', type: 'integer', example: 1),
                 new OA\Property(property: 'title', type: 'string', example: '1984'),
-                new OA\Property(property: 'author', type: 'string', example: 'George Orwell'),
-                new OA\Property(property: 'summary', type: 'string', example: 'Un roman dystopique...'),
+                new OA\Property(property: 'author', type: 'string', example: 'GEORGE ORWELL'),
+                new OA\Property(
+                    property: 'summary',
+                    type: 'string',
+                    example: 'Roman dystopique décrivant une société totalitaire contrôlée par Big Brother.'
+                ),
                 new OA\Property(property: 'isbn', type: 'string', example: '9780451524935'),
-                new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
-                new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+                new OA\Property(
+                    property: '_links',
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'self',
+                            type: 'string',
+                            example: 'http://localhost:8000/api/v1/books/1'
+                        ),
+                        new OA\Property(
+                            property: 'update',
+                            type: 'string',
+                            example: 'http://localhost:8000/api/v1/books/1'
+                        ),
+                        new OA\Property(
+                            property: 'delete',
+                            type: 'string',
+                            example: 'http://localhost:8000/api/v1/books/1'
+                        ),
+                        new OA\Property(
+                            property: 'all',
+                            type: 'string',
+                            example: 'http://localhost:8000/api/v1/books'
+                        ),
+                    ]
+                ),
             ],
             type: 'object'
         )
@@ -227,8 +348,8 @@ class BookController extends Controller
     #[OA\Parameter(
         name: 'Accept',
         in: 'header',
-        description: 'Type de réponse attendu',
-        required: false,
+        description: 'Toujours "application/json"',
+        required: true,
         schema: new OA\Schema(type: 'string', example: 'application/json')
     )]
     #[OA\RequestBody(
@@ -331,8 +452,8 @@ class BookController extends Controller
     #[OA\Parameter(
         name: 'Accept',
         in: 'header',
-        description: 'Type de réponse attendu',
-        required: false,
+        description: 'Toujours "application/json"',
+        required: true,
         schema: new OA\Schema(type: 'string', example: 'application/json')
     )]
     #[OA\Response(
