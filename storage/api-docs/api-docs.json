@@ -34,7 +34,52 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Liste des livres récupérée avec succès"
+                        "description": "Liste des livres récupérée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "1984"
+                                                    },
+                                                    "author": {
+                                                        "type": "string",
+                                                        "example": "George Orwell"
+                                                    },
+                                                    "summary": {
+                                                        "type": "string",
+                                                        "example": "Un roman dystopique..."
+                                                    },
+                                                    "isbn": {
+                                                        "type": "string",
+                                                        "example": "9780451524935"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "example": {
+                                                "current_page": 1,
+                                                "per_page": 2,
+                                                "total": 10
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -45,6 +90,27 @@
                 "summary": "Créer un nouveau livre",
                 "description": "Ajoute un nouveau livre (authentification requise)",
                 "operationId": "3f946db73e3a02e8e2f56f60c398986b",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token Bearer. Exemple: Bearer 1|abcdefghijklmnopqrstuvwxyz",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Type de réponse attendu",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -89,13 +155,84 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Livre créé avec succès"
+                        "description": "Livre créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "1984"
+                                        },
+                                        "author": {
+                                            "type": "string",
+                                            "example": "George Orwell"
+                                        },
+                                        "summary": {
+                                            "type": "string",
+                                            "example": "Un roman dystopique..."
+                                        },
+                                        "isbn": {
+                                            "type": "string",
+                                            "example": "9780451524935"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Non authentifié"
+                        "description": "Non authentifié",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Erreur de validation"
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "title": [
+                                                    "Le titre est obligatoire."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -127,10 +264,60 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Livre récupéré avec succès"
+                        "description": "Livre récupéré avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "1984"
+                                        },
+                                        "author": {
+                                            "type": "string",
+                                            "example": "George Orwell"
+                                        },
+                                        "summary": {
+                                            "type": "string",
+                                            "example": "Un roman dystopique..."
+                                        },
+                                        "isbn": {
+                                            "type": "string",
+                                            "example": "9780451524935"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Livre non trouvé"
+                        "description": "Livre non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Livre non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -150,6 +337,25 @@
                         "schema": {
                             "type": "integer",
                             "example": 1
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token Bearer. Exemple: Bearer 1|abcdefghijklmnopqrstuvwxyz",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Type de réponse attendu",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
                         }
                     }
                 ],
@@ -183,16 +389,100 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Livre mis à jour"
+                        "description": "Livre mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Nouveau titre"
+                                        },
+                                        "author": {
+                                            "type": "string",
+                                            "example": "Nouvel auteur"
+                                        },
+                                        "summary": {
+                                            "type": "string",
+                                            "example": "Nouveau résumé..."
+                                        },
+                                        "isbn": {
+                                            "type": "string",
+                                            "example": "9781234567890"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Non authentifié"
+                        "description": "Non authentifié",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Livre non trouvé"
+                        "description": "Livre non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Livre non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Erreur de validation"
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "title": [
+                                                    "Le titre doit contenir au moins 3 caractères."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -218,6 +508,25 @@
                             "type": "integer",
                             "example": 1
                         }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token Bearer. Exemple: Bearer 1|abcdefghijklmnopqrstuvwxyz",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Type de réponse attendu",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
+                        }
                     }
                 ],
                 "responses": {
@@ -225,10 +534,36 @@
                         "description": "Livre supprimé avec succès"
                     },
                     "401": {
-                        "description": "Non authentifié"
+                        "description": "Non authentifié",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Livre non trouvé"
+                        "description": "Livre non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Livre non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -253,6 +588,25 @@
                         "schema": {
                             "type": "integer",
                             "example": 1
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token Bearer. Exemple: Bearer 1|abcdefghijklmnopqrstuvwxyz",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Type de réponse attendu",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
                         }
                     }
                 ],
@@ -286,16 +640,100 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Livre mis à jour"
+                        "description": "Livre mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Nouveau titre"
+                                        },
+                                        "author": {
+                                            "type": "string",
+                                            "example": "Nouvel auteur"
+                                        },
+                                        "summary": {
+                                            "type": "string",
+                                            "example": "Nouveau résumé..."
+                                        },
+                                        "isbn": {
+                                            "type": "string",
+                                            "example": "9781234567890"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Non authentifié"
+                        "description": "Non authentifié",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Livre non trouvé"
+                        "description": "Livre non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Livre non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Erreur de validation"
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "title": [
+                                                    "Le titre doit contenir au moins 3 caractères."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -313,6 +751,18 @@
                 "summary": "Inscription d'un nouvel utilisateur",
                 "description": "Crée un nouvel utilisateur et génère un token d'authentification",
                 "operationId": "d79ac57d52a31589e5ecdaa73c3a950c",
+                "parameters": [
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Type de réponse attendu",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -415,6 +865,18 @@
                 "summary": "Connexion d'un utilisateur",
                 "description": "Authentifie un utilisateur et retourne un token",
                 "operationId": "eb4a9d12f4bb474018dd941fe27d2810",
+                "parameters": [
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Type de réponse attendu",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -509,6 +971,27 @@
                 "summary": "Déconnexion d'un utilisateur",
                 "description": "Révoque le token d'authentification actuel",
                 "operationId": "91a5bdd6711bc04e24cbcbe64b0b36bb",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token Bearer. Exemple: Bearer 1|abcdefghijklmnopqrstuvwxyz",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Accept",
+                        "in": "header",
+                        "description": "Type de réponse attendu",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "application/json"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Déconnexion réussie",

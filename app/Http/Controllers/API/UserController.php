@@ -17,6 +17,13 @@ class UserController extends Controller
         description: 'Crée un nouvel utilisateur et génère un token d\'authentification',
         tags: ['Authentification']
     )]
+    #[OA\Parameter(
+        name: 'Accept',
+        in: 'header',
+        description: 'Type de réponse attendu',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'application/json')
+    )]
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -44,7 +51,8 @@ class UserController extends Controller
                     type: 'object'
                 ),
                 new OA\Property(property: 'token', type: 'string', example: '1|abcdefghijklmnopqrstuvwxyz')
-            ]
+            ],
+            type: 'object'
         )
     )]
     #[OA\Response(
@@ -54,7 +62,8 @@ class UserController extends Controller
             properties: [
                 new OA\Property(property: 'message', type: 'string', example: 'The email has already been taken.'),
                 new OA\Property(property: 'errors', type: 'object')
-            ]
+            ],
+            type: 'object'
         )
     )]
     public function register(Request $request)
@@ -86,6 +95,13 @@ class UserController extends Controller
         description: 'Authentifie un utilisateur et retourne un token',
         tags: ['Authentification']
     )]
+    #[OA\Parameter(
+        name: 'Accept',
+        in: 'header',
+        description: 'Type de réponse attendu',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'application/json')
+    )]
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
@@ -112,7 +128,8 @@ class UserController extends Controller
                     type: 'object'
                 ),
                 new OA\Property(property: 'token', type: 'string', example: '2|xyz789abcdef')
-            ]
+            ],
+            type: 'object'
         )
     )]
     #[OA\Response(
@@ -122,7 +139,8 @@ class UserController extends Controller
             properties: [
                 new OA\Property(property: 'message', type: 'string', example: 'The provided credentials are incorrect.'),
                 new OA\Property(property: 'errors', type: 'object')
-            ]
+            ],
+            type: 'object'
         )
     )]
     public function login(Request $request)
@@ -156,13 +174,28 @@ class UserController extends Controller
         security: [['bearerAuth' => []]],
         tags: ['Authentification']
     )]
+    #[OA\Parameter(
+        name: 'Authorization',
+        in: 'header',
+        description: 'Token Bearer. Exemple: Bearer 1|abcdefghijklmnopqrstuvwxyz',
+        required: true,
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Parameter(
+        name: 'Accept',
+        in: 'header',
+        description: 'Type de réponse attendu',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'application/json')
+    )]
     #[OA\Response(
         response: 200,
         description: 'Déconnexion réussie',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'message', type: 'string', example: 'Déconnexion réussie')
-            ]
+            ],
+            type: 'object'
         )
     )]
     #[OA\Response(
@@ -171,7 +204,8 @@ class UserController extends Controller
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')
-            ]
+            ],
+            type: 'object'
         )
     )]
     public function logout(Request $request)
