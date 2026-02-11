@@ -7,12 +7,56 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Attributes as OA;
 
 class UserController extends Controller
 {
-    /**
-     * Inscription d'un utilisateur
-     */
+    #[OA\Post(
+        path: '/register',
+        summary: 'Inscription d\'un nouvel utilisateur',
+        description: 'Crée un nouvel utilisateur et génère un token d\'authentification',
+        tags: ['Authentification']
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['name', 'email', 'password'],
+            properties: [
+                new OA\Property(property: 'name', type: 'string', example: 'John Doe', maxLength: 255),
+                new OA\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com', maxLength: 255),
+                new OA\Property(property: 'password', type: 'string', format: 'password', example: 'password123', minLength: 8)
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Utilisateur créé avec succès',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'Utilisateur créé avec succès'),
+                new OA\Property(
+                    property: 'user',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
+                        new OA\Property(property: 'email', type: 'string', example: 'john@example.com')
+                    ],
+                    type: 'object'
+                ),
+                new OA\Property(property: 'token', type: 'string', example: '1|abcdefghijklmnopqrstuvwxyz')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 422,
+        description: 'Erreur de validation',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'The email has already been taken.'),
+                new OA\Property(property: 'errors', type: 'object')
+            ]
+        )
+    )]
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -36,9 +80,51 @@ class UserController extends Controller
         ], 201);
     }
 
-    /**
-     * Connexion et génération d'un jeton
-     */
+    #[OA\Post(
+        path: '/login',
+        summary: 'Connexion d\'un utilisateur',
+        description: 'Authentifie un utilisateur et retourne un token',
+        tags: ['Authentification']
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['email', 'password'],
+            properties: [
+                new OA\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
+                new OA\Property(property: 'password', type: 'string', format: 'password', example: 'password123')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Connexion réussie',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'Connexion réussie'),
+                new OA\Property(
+                    property: 'user',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
+                        new OA\Property(property: 'email', type: 'string', example: 'john@example.com')
+                    ],
+                    type: 'object'
+                ),
+                new OA\Property(property: 'token', type: 'string', example: '2|xyz789abcdef')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 422,
+        description: 'Identifiants incorrects',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'The provided credentials are incorrect.'),
+                new OA\Property(property: 'errors', type: 'object')
+            ]
+        )
+    )]
     public function login(Request $request)
     {
         $validated = $request->validate([
@@ -63,9 +149,31 @@ class UserController extends Controller
         ], 200);
     }
 
-    /**
-     * Déconnexion (suppression du jeton courant)
-     */
+    #[OA\Post(
+        path: '/logout',
+        summary: 'Déconnexion d\'un utilisateur',
+        description: 'Révoque le token d\'authentification actuel',
+        security: [['bearerAuth' => []]],
+        tags: ['Authentification']
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Déconnexion réussie',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'Déconnexion réussie')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Non authentifié',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')
+            ]
+        )
+    )]
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
